@@ -57,7 +57,68 @@ if (typeof io !== "undefined") {
     const pais = presentes[id];
 
     if (pais === undefined) return;
+const nomes = [
+  "🇧🇷 Brasil",
+  "🇫🇷 França",
+  "🇦🇷 Argentina",
+  "🇵🇹 Portugal"
+];
 
+const cores = [
+  "#00ed8b",
+  "#ae75ff",
+  "#42cdff",
+  "#ff536e"
+];
+
+const emojis = ["🌹", "🤍", "🐱", "🥰"];
+
+document.getElementById("alertaGift")?.remove();
+
+const alerta = document.createElement("div");
+alerta.id = "alertaGift";
+
+alerta.style.cssText = `
+  position: fixed;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  max-width: 420px;
+  background: rgba(5, 9, 21, 0.96);
+  border: 2px solid ${cores[pais]};
+  box-shadow: 0 0 35px ${cores[pais]};
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  z-index: 9999;
+  pointer-events: none;
+`;
+
+alerta.textContent =
+  `${quantidade >= 5 ? "🔥 SUPER ATAQUE 🔥" : "⚡ ATAQUE ⚡"}\n\n` +
+  `@${gift.username || "Espectador"}\n` +
+  `${emojis[pais]} × ${quantidade}\n\n` +
+  `${nomes[pais]}\n` +
+  `Até +${quantidade * 12} territórios`;
+
+document.body.appendChild(alerta);
+
+alerta.animate([
+  { opacity: 0, scale: "0.7" },
+  { opacity: 1, scale: "1.05" },
+  { opacity: 1, scale: "1" }
+], {
+  duration: 400,
+  fill: "forwards"
+});
+
+setTimeout(() => alerta.remove(), 3000);
     const botao = document.getElementById("gift" + pais);
 
     if (botao) {
