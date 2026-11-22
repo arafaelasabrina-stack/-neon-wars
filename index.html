@@ -264,6 +264,48 @@ document.body.appendChild(teste);
 
 }
 </style>
+  
+<style>
+body.modo-live button:not([id^="gift"]) {
+  display: none !important;
+}
+
+body.modo-live button[id^="gift"] {
+  pointer-events: none !important;
+  opacity: 1 !important;
+  cursor: default;
+}
+
+body.modo-live canvas {
+  max-height: 32dvh !important;
+}
+
+body.modo-live .app {
+  padding-bottom: 70px !important;
+}
+</style>
+
+<script>
+if (new URLSearchParams(location.search).get("live") === "1") {
+  document.body.classList.add("modo-live");
+
+  const walker = document.createTreeWalker(
+    document.querySelector(".app"),
+    NodeFilter.SHOW_TEXT
+  );
+
+  let texto;
+
+  while (texto = walker.nextNode()) {
+    texto.nodeValue = texto.nodeValue
+      .replace(/simular presente de 1 moeda/gi,
+        "ENVIE UM PRESENTE PARA DEFENDER SEU PAÍS!")
+      .replace(/simular \+12 territórios/gi,
+        "+12 territórios");
+  }
+}
+</script>
+
 </body>
 </html>
 
