@@ -121,12 +121,27 @@ alerta.animate([
 setTimeout(() => alerta.remove(), 3000);
     const botao = document.getElementById("gift" + pais);
 
-    if (botao) {
-      for (let i = 0; i < quantidade; i++) {
-        if (botao.disabled) break;
-        botao.click();
-      }
-    }
+    let restantes = quantidade;
+
+function entregarPresentes() {
+  const alvo = document.getElementById("gift" + pais);
+
+  if (!alvo || alvo.disabled) {
+    setTimeout(entregarPresentes, 500);
+    return;
+  }
+
+  while (restantes > 0 && !alvo.disabled) {
+    alvo.click();
+    restantes--;
+  }
+
+  if (restantes > 0) {
+    setTimeout(entregarPresentes, 500);
+  }
+}
+
+entregarPresentes();
   });
 } else {
   indicador.textContent = "🔴 Falha ao carregar a conexão";
