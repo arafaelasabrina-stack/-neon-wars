@@ -220,6 +220,49 @@ document.body.appendChild(teste);
     top: 30% !important;
   }
 }
+  @media (max-width: 600px) {
+
+  .app {
+    padding: 4px 8px !important;
+  }
+
+  .app * {
+    line-height: 1.15;
+  }
+
+  .app div {
+    row-gap: 4px !important;
+  }
+
+  .app div:has(> #gift0):has(> #gift3) {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+  }
+
+  button[id^="gift"] {
+    padding: 5px 2px !important;
+    font-size: 10px !important;
+    min-width: 0 !important;
+  }
+
+  button[id^="gift"] * {
+    font-size: 10px !important;
+    margin: 2px 0 !important;
+  }
+
+  button {
+    padding: 4px !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+  }
+
+  #alertaGift {
+    padding: 8px !important;
+    font-size: 13px !important;
+  }
+
+}
 </style>
 </body>
 </html>
