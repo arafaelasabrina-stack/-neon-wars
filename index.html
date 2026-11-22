@@ -305,7 +305,30 @@ if (new URLSearchParams(location.search).get("live") === "1") {
   }
 }
 </script>
+<script>
+if (document.body.classList.contains("modo-live")) {
+  const app = document.querySelector(".app");
+  const elementos = Array.from(app.children);
 
+  const ranking = elementos.find(el =>
+    el.textContent.trim().toUpperCase()
+    .includes("RANKING DE TERRITÓRIOS")
+  );
+
+  const tituloPresentes = elementos.find(el =>
+    el.textContent.trim().toUpperCase()
+    .includes("ENVIE UM PRESENTE")
+  );
+
+  const presentes = document.querySelector("#gift0")?.parentElement;
+
+  if (ranking && tituloPresentes && presentes &&
+      presentes.parentElement === app) {
+    app.insertBefore(tituloPresentes, ranking);
+    app.insertBefore(presentes, ranking);
+  }
+}
+</script>
 </body>
 </html>
 
