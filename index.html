@@ -38,7 +38,7 @@ if (typeof io !== "undefined") {
     indicador.style.color = "#ffd166";
   });
 
-  socket.on("gift", (gift) => {
+  function receberPresente(gift) {
     console.log("Presente real:", gift);
 
     const id = String(gift.id);
@@ -142,7 +142,24 @@ function entregarPresentes() {
 }
 
 entregarPresentes();
+  }
+
+socket.on("gift", receberPresente);
+
+const teste = document.createElement("button");
+teste.textContent = "🧪 Testar presente real";
+teste.style.cssText = "display:block;width:90%;margin:20px auto;padding:15px;background:#142338;color:white;border:1px solid #55e8ff;border-radius:12px;font-size:16px;";
+
+teste.onclick = () => {
+  receberPresente({
+    id: "5655",
+    name: "Rose",
+    count: 5,
+    username: "TesteNeonWars"
   });
+};
+
+document.body.appendChild(teste);
 } else {
   indicador.textContent = "🔴 Falha ao carregar a conexão";
 }
