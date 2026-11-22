@@ -329,6 +329,175 @@ if (document.body.classList.contains("modo-live")) {
   }
 }
 </script>
+  
+<script>
+(() => {
+  let audio;
+  let ativo = false;
+
+  const botaoSom = document.createElement("button");
+  botaoSom.textContent = "🔊 Ativar som";
+  botaoSom.style.cssText = `
+    position:fixed;
+    top:8px;
+    right:10px;
+    z-index:99999;
+    background:#102438;
+    color:#55e8ff;
+    border:1px solid #55e8ff;
+    border-radius:8px;
+    padding:8px;
+    font-size:11px;
+    display:block!important;
+  `;
+
+  document.body.appendChild(botaoSom);
+
+  botaoSom.onclick = async () => {
+    const Audio = window.AudioContext ||
+                  window.webkitAudioContext;
+
+    if (!Audio) return;
+
+    audio = audio || new Audio();
+    await audio.resume();
+    ativo = true;
+    botaoSom.remove();
+    som("inicio");
+  };
+
+  function nota(freq, fim, tempo, volume, tipo, atraso = 0) {
+    if (!ativo || !audio || audio.state !== "running") return;
+
+    const osc = audio.createOscillator();
+    const gain = audio.createGain();
+    const agora = audio.currentTime + atraso;
+
+    osc.type = tipo;
+    osc.frequency.setValueAtTime(freq, agora);
+    osc.frequency.exponentialRampToValueAtTime(
+      fim, agora + tempo
+    );
+
+    gain.gain.setValueAtTime(volume, agora);
+    gain.gain.exponentialRampToValueAtTime(
+      0.001, agora + tempo
+    );
+
+    osc.connect(gain);
+    gain.connect(audio.destination);
+    osc.start(agora);
+    osc.stop(agora + tempo);
+  }
+
+  function som(tipo) {
+    if (tipo === "presente") {
+      nota(520, 1040, 0.15, 0.10, "sine");
+    }
+
+    if (tipo === "ataque") {
+      nota(1200, 90, 0.35, 0.12, "sawtooth");
+    }
+
+    if (tipo === "super") {
+      nota(150, 30, 0.8, 0.20, "sawtooth");
+      nota(800, 60, 0.5, 0.12, "square");
+      nota(400, 40, 0.6, 0.10, "triangle", 0.15);
+    }
+
+    if (tipo === "contagem") {
+      nota(850, 850, 0.12, 0.12, "sine");
+    }
+
+    if (tipo === "vitoria") {
+      [523, 659, 784, 1047].forEach((f, i) => {
+        nota(f, f, 0.35, 0.12, "triangle", i * 0.18);
+      });
+    }
+
+    if (tipo === "inicio") {
+      [220, 330, 440, 880].forEach((f, i) => {
+        nota(f, f, 0.22, 0.10, "triangle", i * 0.12);
+      });
+    }
+  }
+
+  let ultimaPartida = "";
+  let ultimoSegundo = "";
+
+  function verificarPartida() {
+    const texto = document.querySelector(".app")
+      ?.innerText || "";
+
+    const partida = texto.match(/PARTIDA\s+(\d+)/i);
+
+    if (partida && partida[1] !== ultimaPartida) {
+      ultimaPartida = partida[1];
+      ultimoSegundo = "";
+      som("inicio");
+    }
+
+    const tempo = texto.match(
+      /PARTIDA\s+\d+\s*·\s*\d+\s*PAÍSES\s*·\s*(\d+)s/i
+    );
+
+    if (tempo) {
+      const segundos = Number(tempo[1]);
+
+      if (segundos >= 1 && segundos <= 5 &&
+          tempo[1] !== ultimoSegundo) {
+        ultimoSegundo = tempo[1];
+        som("contagem");
+      }
+    }
+  }
+
+  let ultimaVitoria = "";
+
+  const observer = new MutationObserver(registros => {
+    registros.forEach(registro => {
+      registro.addedNodes.forEach(node => {
+        if (node.nodeType === 1 &&
+            node.id === "alertaGift") {
+
+          som("presente");
+
+          if (node.textContent.includes("SUPER ATAQUE")) {
+            som("super");
+          } else {
+            som("ataque");
+          }
+        }
+      });
+    });
+
+    const texto = document.querySelector(".app")
+      ?.innerText || "";
+
+    const vitoria = texto.match(
+      /(Brasil|Portugal|Argentina|França) venceu!/i
+    );
+
+    if (vitoria) {
+      if (!ultimaVitoria) {
+        ultimaVitoria = vitoria[0];
+        som("vitoria");
+      }
+    } else {
+      ultimaVitoria = "";
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+
+  setInterval(verificarPartida, 200);
+})();
+</script>
+
 </body>
 </html>
 
