@@ -542,6 +542,106 @@ if (document.body.classList.contains("modo-live")) {
 })();
 </script>
 
+<style>
+/* Neon Wars - painel compacto para live */
+#painel-acoes-live {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin: 5px 0 8px;
+}
+
+#painel-acoes-live .acao {
+  background: #102139;
+  border: 1px solid #315779;
+  border-radius: 9px;
+  text-align: center;
+  padding: 7px 2px;
+  color: #eef7ff;
+  font-size: 10px;
+}
+
+#painel-acoes-live .acao strong {
+  display: block;
+  font-size: 17px;
+  color: #67e8ff;
+}
+
+#painel-acoes-live .acao span {
+  display: block;
+  font-size: 9px;
+}
+
+@media(max-width:600px) {
+  body .app {
+    padding: 5px 8px !important;
+  }
+
+  body .imagem-presente-real {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  body button[id^="gift"] {
+    font-size: 10px !important;
+    padding: 5px 2px !important;
+    line-height: 1.15 !important;
+  }
+}
+</style>
+
+<script>
+(() => {
+  function montarPainel() {
+    if (document.getElementById("painel-acoes-live")) return;
+
+    const app = document.querySelector(".app");
+    if (!app) return;
+
+    const botoes = app.querySelectorAll('button[id^="gift"]');
+    if (!botoes.length) return;
+
+    const painel = document.createElement("div");
+    painel.id = "painel-acoes-live";
+
+    painel.innerHTML = `
+      <div class="acao">
+        💬 COMENTAR PAÍS
+        <strong>+8</strong>
+        <span>30s por pessoa</span>
+      </div>
+      <div class="acao">
+        ❤️ 100 CURTIDAS
+        <strong>+5</strong>
+        <span>individuais</span>
+      </div>
+      <div class="acao">
+        👤 SEGUIR
+        <strong>+20</strong>
+        <span>uma vez</span>
+      </div>
+    `;
+
+    const primeiroBotao = botoes[0];
+    let bloco = primeiroBotao;
+
+    while (bloco.parentElement &&
+           bloco.parentElement !== app) {
+      bloco = bloco.parentElement;
+    }
+
+    app.insertBefore(painel, bloco);
+  }
+
+  montarPainel();
+
+  new MutationObserver(montarPainel).observe(
+    document.body,
+    {childList:true, subtree:true}
+  );
+})();
+</script>
+
 </body>
 </html>
 
