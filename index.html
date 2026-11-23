@@ -498,6 +498,50 @@ if (document.body.classList.contains("modo-live")) {
 })();
 </script>
 
+<script>
+(() => {
+  const imagens = [
+    { arquivo: "IMG_2489.jpeg", nome: "Rosa", pais: "Brasil" },
+    { arquivo: "IMG_2490.jpeg", nome: "Rosa branca", pais: "França" },
+    { arquivo: "IMG_2492.jpeg", nome: "Incrível", pais: "Argentina" },
+    { arquivo: "IMG_2491.jpeg", nome: "Amo você", pais: "Portugal" }
+  ];
+
+  function atualizarPresentes() {
+    const botoes = document.querySelectorAll('button[id^="gift"]');
+
+    botoes.forEach((botao, i) => {
+      if (i >= imagens.length) return;
+
+      const presente = imagens[i];
+
+      if (botao.querySelector(".imagem-presente-real")) return;
+
+      const imagem = document.createElement("img");
+      imagem.src = presente.arquivo;
+      imagem.alt = presente.nome;
+      imagem.className = "imagem-presente-real";
+      imagem.style.cssText = `
+        width: 55px;
+        height: 55px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto 4px;
+        border-radius: 8px;
+      `;
+
+      botao.prepend(imagem);
+    });
+  }
+
+  atualizarPresentes();
+  new MutationObserver(atualizarPresentes).observe(
+    document.body,
+    { childList: true, subtree: true }
+  );
+})();
+</script>
+
 </body>
 </html>
 
